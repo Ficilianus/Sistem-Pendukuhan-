@@ -10,6 +10,7 @@ class DokumenPenduduk extends Model
     use HasFactory;
 
     protected $fillable = [
+        'nama_kepala_keluarga',
         'nama',
         'rt',
         'jenis_dokumen',

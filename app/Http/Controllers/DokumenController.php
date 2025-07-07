@@ -10,7 +10,9 @@ class DokumenController extends Controller
 {
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
+            'nama_kepala_keluarga' => 'required|string|max:255',
             'nama' => 'required|string|max:255',
             'rt' => 'required|string|max:10',
             'jenis_dokumen' => 'required|string|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah',
@@ -18,6 +20,7 @@ class DokumenController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
 
         if ($validated['jenis_dokumen'] === 'KTP') {
             $request->validate([
@@ -27,10 +30,20 @@ class DokumenController extends Controller
         }
 
         $file = $request->file('file');
-        $filename = str_replace(' ', '', $validated['jenis_dokumen']) . '_' . $validated['rt'] . '_' . strtolower($validated['nama']) . '.' . $file->getClientOriginalExtension();
+
+        $namaKepalaKeluarga = preg_replace('/\s+/', '', $validated['nama_kepala_keluarga']);
+        $jenis = str_replace(' ', '', $validated['jenis_dokumen']);
+        $rt = $validated['rt'];
+        $nama = strtolower(preg_replace('/\s+/', '', $validated['nama']));
+        $extension = $file->getClientOriginalExtension();
+
+        $filename = "{$namaKepalaKeluarga}_{$jenis}_{$rt}_{$nama}.{$extension}";
+
         $file->storeAs('public/dokumen', $filename);
 
+
         DokumenPenduduk::create([
+            'nama_kepala_keluarga' => $validated['nama_kepala_keluarga'],
             'nama' => $validated['nama'],
             'rt' => $validated['rt'],
             'jenis_dokumen' => $validated['jenis_dokumen'],
@@ -39,6 +52,12 @@ class DokumenController extends Controller
             'nama_file' => $filename,
         ]);
 
+
         return redirect()->back()->with('success', 'Data berhasil disimpan.');
+    }
+    public function index()
+    {
+        $dokumenKK = DokumenPenduduk::where('jenis_dokumen', 'KK')->get();
+        return view('data', compact('dokumenKK'));
     }
 }

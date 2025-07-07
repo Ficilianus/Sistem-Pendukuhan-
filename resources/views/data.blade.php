@@ -39,10 +39,22 @@
   </div>
 
   <!-- Box Kedua untuk menampilkan data-->
-  <div class="max-w-2xl mx-auto bg-[#BDB395] p-6 rounded-lg shadow-md mt-6 space-y-4">
-    <form action="#" method="GET">
-    </form>
-  </div>
+<!-- Box Kedua untuk menampilkan data KK -->
+<div class="max-w-2xl mx-auto bg-[#BDB395] p-6 rounded-lg shadow-md mt-6 space-y-4">
+  <h2 class="text-xl font-semibold text-gray-800 mb-4">Data KK</h2>
+
+  @forelse ($dokumenKK as $item)
+    <div class="flex justify-between items-center bg-white p-3 rounded shadow">
+      <span class="text-gray-800 font-medium">{{ $item->nama }}</span>
+      <button onclick="showImage('{{ asset('storage/dokumen/' . $item->nama_file) }}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Lihat
+      </button>
+    </div>
+  @empty
+    <p class="text-gray-700">Belum ada data dokumen KK.</p>
+  @endforelse
+</div>
+
   <!-- Tombol Add -->
 <div class="fixed bottom-6 right-6">
   <button onclick="document.getElementById('formModal').classList.remove('hidden')" class="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700">
@@ -60,7 +72,9 @@
     <form action="{{ route('dokumen.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
       <div class="space-y-3">
+        <input type="text" name="nama_kepala_keluarga" placeholder="Nama Kepala Keluarga" class="w-full px-4 py-2 border rounded" required>
         <input type="text" name="nama" placeholder="Nama" class="w-full px-4 py-2 border rounded" required>
+
         <select name="rt" class="w-full px-4 py-2 border rounded" required>
           <option value="">-- Pilih RT --</option>
           <option value="RT01">RT 01</option>
@@ -109,6 +123,20 @@
       }
     });
   });
+</script>
+<!-- Modal Preview Gambar -->
+<div id="imageModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg p-4 relative">
+    <button onclick="document.getElementById('imageModal').classList.add('hidden')" class="absolute top-2 right-2 text-gray-600 hover:text-red-600 text-xl">&times;</button>
+    <img id="previewImage" src="" alt="Preview Gambar" class="max-w-full max-h-[70vh] rounded" />
+  </div>
+</div>
+
+<script>
+  function showImage(src) {
+    document.getElementById('previewImage').src = src;
+    document.getElementById('imageModal').classList.remove('hidden');
+  }
 </script>
 
 @endsection

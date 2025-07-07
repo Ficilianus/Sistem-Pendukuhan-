@@ -17,3 +17,4 @@ Route::get('/data', function () {
 
 
 Route::post('/dokumen/store', [DokumenController::class, 'store'])->name('dokumen.store');
+Route::get('/data', [DokumenController::class, 'index'])->name('dokumen.index');
