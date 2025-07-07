@@ -44,13 +44,18 @@
   <h2 class="text-xl font-semibold text-gray-800 mb-4">Data KK</h2>
 
   @forelse ($dokumenKK as $item)
-    <div class="flex justify-between items-center bg-white p-3 rounded shadow">
-      <span class="text-gray-800 font-medium">{{ $item->nama }}</span>
-      <button onclick="showImage('{{ asset('storage/dokumen/' . $item->nama_file) }}')" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Lihat
-      </button>
+  <div class="flex justify-between items-center bg-white p-3 rounded shadow">
+    <div>
+      <span class="text-gray-800 font-medium">{{ $item->nama_kepala_keluarga }}</span>
+      <span class="ml-2 text-sm text-gray-500">(RT: {{ $item->rt }})</span>
     </div>
-  @empty
+    <a href="{{ route('dokumen.keluarga', ['nama_kepala_keluarga' => $item->nama_kepala_keluarga, 'rt' => $item->rt]) }}"
+       class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+      Lihat
+    </a>
+  </div>
+@empty
+
     <p class="text-gray-700">Belum ada data dokumen KK.</p>
   @endforelse
 </div>

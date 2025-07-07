@@ -57,7 +57,22 @@ class DokumenController extends Controller
     }
     public function index()
     {
-        $dokumenKK = DokumenPenduduk::where('jenis_dokumen', 'KK')->get();
+        $dokumenKK = DokumenPenduduk::select('nama_kepala_keluarga', 'rt')
+            ->groupBy('nama_kepala_keluarga', 'rt')
+            ->get();
+
         return view('data', compact('dokumenKK'));
     }
+    public function keluarga(Request $request)
+{
+    $namaKK = $request->nama_kepala_keluarga;
+    $rt = $request->rt;
+
+    $dataKeluarga = DokumenPenduduk::where('nama_kepala_keluarga', $namaKK)
+        ->where('rt', $rt)
+        ->get();
+
+    return view('dataKeluarga', compact('dataKeluarga', 'namaKK', 'rt'));
+}
+
 }
