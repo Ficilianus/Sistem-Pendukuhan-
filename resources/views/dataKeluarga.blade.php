@@ -6,27 +6,31 @@
     <div class="text-center mb-6">
         <h1 class="text-2xl font-bold">Data Keluarga: {{ $namaKK }} (RT: {{ $rt }})</h1>
     </div>
-
     <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow space-y-4">
         @foreach ($dataKeluarga as $item)
             <div class="bg-gray-100 p-4 rounded relative">
-                <div class="absolute top-2 right-2 flex gap-2">
+                <div class="absolute top-3 right-3 flex gap-3 items-center">
+                    @if (in_array($item->status_keluarga, ['Duda', 'Janda']))
+                        <span
+                            class="min-w-[70px] h-9 text-center bg-red-100 text-red-600 text-sm font-semibold px-3 py-1 rounded flex items-center justify-center">
+                            Status: {{ $item->status_keluarga }}
+                        </span>
+                    @endif
                     <!-- Tombol Edit -->
-<button onclick="openEditModal({{ $item->id }})"
-    class="min-w-[70px] h-9 text-center bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700">
-    Edit
-</button>
-
-<!-- Tombol Hapus -->
-<form action="{{ route('dokumen.destroy', $item->id) }}" method="POST"
-    onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-    @csrf
-    @method('DELETE')
-    <button type="submit"
-        class="min-w-[70px] h-9 text-center bg-red-600 text-white text-sm px-3 py-1 rounded hover:bg-red-700">
-        Hapus
-    </button>
-</form>
+                    <button onclick="openEditModal({{ $item->id }})"
+                        class="min-w-[70px] h-9 text-center bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700">
+                        Edit
+                    </button>
+                    <!-- Tombol Hapus -->
+                    <form action="{{ route('dokumen.destroy', $item->id) }}" method="POST"
+                        onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="min-w-[70px] h-9 text-center bg-red-600 text-white text-sm px-3 py-1 rounded hover:bg-red-700">
+                            Hapus
+                        </button>
+                    </form>
 
                     </form>
                 </div>

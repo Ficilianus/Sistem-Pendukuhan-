@@ -20,6 +20,7 @@ return new class extends Migration
     $table->string('jenis_dokumen');
     $table->string('gender')->nullable();
     $table->date('tanggal_lahir')->nullable();
+    $table->string('status_keluarga')->nullable();
     $table->string('nama_file');
     $table->timestamps();
 });

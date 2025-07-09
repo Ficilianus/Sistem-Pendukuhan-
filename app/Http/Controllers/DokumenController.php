@@ -18,6 +18,7 @@ class DokumenController extends Controller
             'jenis_dokumen' => 'required|string|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah',
             'gender' => 'nullable|in:Laki-laki,Perempuan',
             'tanggal_lahir' => 'nullable|date',
+            'status_keluarga' => 'nullable|in:Lengkap,Duda,Janda',
             'file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -49,8 +50,10 @@ class DokumenController extends Controller
             'jenis_dokumen' => $validated['jenis_dokumen'],
             'gender' => $validated['jenis_dokumen'] === 'KTP' ? $validated['gender'] : null,
             'tanggal_lahir' => $validated['jenis_dokumen'] === 'KTP' ? $validated['tanggal_lahir'] : null,
+            'status_keluarga' => $validated['jenis_dokumen'] === 'KK' ? $validated['status_keluarga'] : null, // ✅ tambahkan ini
             'nama_file' => $filename,
         ]);
+
 
 
         return redirect()->back()->with('success', 'Data berhasil disimpan.');
@@ -74,18 +77,18 @@ class DokumenController extends Controller
     }
 
 
-public function keluarga(Request $request)
-{
-    $namaKK = $request->nama_kepala_keluarga;
-    $rt = $request->rt;
+    public function keluarga(Request $request)
+    {
+        $namaKK = $request->nama_kepala_keluarga;
+        $rt = $request->rt;
 
-    $dataKeluarga = DokumenPenduduk::where('nama_kepala_keluarga', $namaKK)
-        ->where('rt', $rt)
-        ->orderByRaw("FIELD(jenis_dokumen, 'KK', 'KTP', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah')")
-        ->get();
+        $dataKeluarga = DokumenPenduduk::where('nama_kepala_keluarga', $namaKK)
+            ->where('rt', $rt)
+            ->orderByRaw("FIELD(jenis_dokumen, 'KK', 'KTP', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah')")
+            ->get();
 
-    return view('dataKeluarga', compact('dataKeluarga', 'namaKK', 'rt'));
-}
+        return view('dataKeluarga', compact('dataKeluarga', 'namaKK', 'rt'));
+    }
 
     public function update(Request $request, $id)
     {
@@ -98,6 +101,7 @@ public function keluarga(Request $request)
             'jenis_dokumen' => 'required|string|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah',
             'gender' => 'nullable|in:Laki-laki,Perempuan',
             'tanggal_lahir' => 'nullable|date',
+            'status_keluarga' => 'nullable|in:Lengkap,Duda,Janda',
             'file' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -105,6 +109,10 @@ public function keluarga(Request $request)
             $request->validate([
                 'gender' => 'required',
                 'tanggal_lahir' => 'required|date',
+            ]);
+        }else if ($validated['jenis_dokumen'] === 'KK') {
+            $request->validate([
+                'status_keluarga' => 'required|in:Lengkap,Duda,Janda',
             ]);
         }
 
@@ -114,6 +122,8 @@ public function keluarga(Request $request)
             'rt' => $validated['rt'],
             'jenis_dokumen' => $validated['jenis_dokumen'],
             'gender' => $validated['jenis_dokumen'] === 'KTP' ? $validated['gender'] : null,
+            'status_keluarga' => $validated['jenis_dokumen'] === 'KK' ? $validated['status_keluarga'] : null,
+
             'tanggal_lahir' => $validated['jenis_dokumen'] === 'KTP' ? $validated['tanggal_lahir'] : null,
         ]);
 

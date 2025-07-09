@@ -34,8 +34,6 @@
         </div>
 
     </div>
-
-    <!-- Box Kedua untuk menampilkan data-->
     <!-- Box Kedua untuk menampilkan data KK -->
     <div class="max-w-2xl mx-auto bg-[#BDB395] p-6 rounded-lg shadow-md mt-6 space-y-4">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Data Keluarga</h2>
@@ -90,6 +88,7 @@
                         <option value="RT05">RT 05</option>
                     </select>
 
+                    <!-- Jenis Dokumen -->
                     <label class="block font-medium">Jenis Dokumen:</label>
                     @foreach (['KTP', 'KK', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah'] as $doc)
                         <label class="inline-flex items-center">
@@ -98,6 +97,7 @@
                         </label>
                     @endforeach
 
+                    <!-- Field Tambahan Jika KTP -->
                     <div id="ktpFields" class="hidden">
                         <label class="block mt-2">Jenis Kelamin:</label>
                         <label class="inline-flex items-center">
@@ -106,9 +106,23 @@
                         <label class="inline-flex items-center">
                             <input type="radio" name="gender" value="Perempuan" class="mr-2"> Perempuan
                         </label>
-
                         <input type="date" name="tanggal_lahir" class="w-full px-4 py-2 border rounded mt-2">
                     </div>
+
+                    <!-- Field Tambahan Jika KK -->
+                    <div id="kkFields" class="hidden">
+                        <label class="block mt-2">Status Keluarga:</label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="status_keluarga" value="Lengkap" class="mr-2"> Lengkap
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="status_keluarga" value="Duda" class="mr-2"> Duda
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="status_keluarga" value="Janda" class="mr-2"> Janda
+                        </label>
+                    </div>
+
 
                     <label class="block font-medium mt-2">Upload Gambar:</label>
                     <input type="file" name="file" accept="image/*" class="w-full" required>
@@ -147,5 +161,24 @@
             document.getElementById('imageModal').classList.remove('hidden');
         }
     </script>
+<script>
+    document.querySelectorAll('.jenis-radio').forEach((radio) => {
+        radio.addEventListener('change', function () {
+            const ktp = document.getElementById('ktpFields');
+            const kk = document.getElementById('kkFields');
+
+            if (this.value === 'KTP') {
+                ktp.classList.remove('hidden');
+                kk.classList.add('hidden');
+            } else if (this.value === 'KK') {
+                ktp.classList.add('hidden');
+                kk.classList.remove('hidden');
+            } else {
+                ktp.classList.add('hidden');
+                kk.classList.add('hidden');
+            }
+        });
+    });
+</script>
 
 @endsection

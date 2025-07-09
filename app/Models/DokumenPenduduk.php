@@ -16,6 +16,7 @@ class DokumenPenduduk extends Model
         'jenis_dokumen',
         'gender',
         'tanggal_lahir',
+        'status_keluarga',
         'nama_file',
     ];
 }
