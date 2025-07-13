@@ -23,12 +23,13 @@ class DokumenController extends Controller
         ]);
 
 
-        if ($validated['jenis_dokumen'] === 'KTP') {
+        if (in_array($validated['jenis_dokumen'], ['KTP', 'Akte Lahir'])) {
             $request->validate([
-                'gender' => 'required',
+                'gender' => 'required|in:Laki-laki,Perempuan',
                 'tanggal_lahir' => 'required|date',
             ]);
         }
+
 
         $file = $request->file('file');
 
@@ -48,9 +49,9 @@ class DokumenController extends Controller
             'nama' => $validated['nama'],
             'rt' => $validated['rt'],
             'jenis_dokumen' => $validated['jenis_dokumen'],
-            'gender' => $validated['jenis_dokumen'] === 'KTP' ? $validated['gender'] : null,
-            'tanggal_lahir' => $validated['jenis_dokumen'] === 'KTP' ? $validated['tanggal_lahir'] : null,
-            'status_keluarga' => $validated['jenis_dokumen'] === 'KK' ? $validated['status_keluarga'] : null, // ✅ tambahkan ini
+            'gender' => in_array($validated['jenis_dokumen'], ['KTP', 'Akte Lahir']) ? $validated['gender'] : null,
+            'tanggal_lahir' => in_array($validated['jenis_dokumen'], ['KTP', 'Akte Lahir']) ? $validated['tanggal_lahir'] : null,
+            'status_keluarga' => $validated['jenis_dokumen'] === 'KK' ? $validated['status_keluarga'] : null,
             'nama_file' => $filename,
         ]);
 
@@ -71,7 +72,8 @@ class DokumenController extends Controller
                 $query->where('rt', $filterRT);
             })
             ->groupBy('nama_kepala_keluarga', 'rt')
-            ->get();
+            ->paginate(6); // ✅ Gunakan pagination, bukan get()
+
 
         return view('data', compact('dokumenKK', 'search', 'filterRT'));
     }
@@ -110,7 +112,7 @@ class DokumenController extends Controller
                 'gender' => 'required',
                 'tanggal_lahir' => 'required|date',
             ]);
-        }else if ($validated['jenis_dokumen'] === 'KK') {
+        } else if ($validated['jenis_dokumen'] === 'KK') {
             $request->validate([
                 'status_keluarga' => 'required|in:Lengkap,Duda,Janda',
             ]);

@@ -12,9 +12,9 @@
     <!-- Box Pertama -->
     <div class="max-w-2xl mx-auto bg-[#BDB395] p-6 rounded-lg shadow-md space-y-6">
         <form action="{{ route('dokumen.index') }}" method="GET">
-            <div class="flex items-center space-x-2">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kepala keluarga..."
-                    class="flex-1 px-4 py-2 rounded bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-700">
+                    class="flex-1 px-4 py-2 rounded bg-white text-blacx`k focus:outline-none focus:ring-2 focus:ring-gray-700">
                 <button type="submit" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800">
                     Cari
                 </button>
@@ -39,7 +39,9 @@
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Data Keluarga</h2>
 
         @forelse ($dokumenKK as $item)
-            <div class="flex justify-between items-center bg-white p-3 rounded shadow">
+            <div
+                class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-3 rounded shadow space-y-2 sm:space-y-0">
+
                 <div>
                     <span class="text-gray-800 font-medium">{{ $item->nama_kepala_keluarga }}</span>
                     {{-- <span class="ml-2 text-sm text-gray-500">(RT: {{ $item->rt }})</span> --}}
@@ -53,19 +55,25 @@
 
             <p class="text-gray-700">Belum ada data dokumen KK.</p>
         @endforelse
+        <div class="mt-4">
+            {{ $dokumenKK->withQueryString()->links() }}
+        </div>
+
     </div>
 
     <!-- Tombol Add -->
-    <div class="fixed bottom-6 right-6">
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6">
+
         <button onclick="document.getElementById('formModal').classList.remove('hidden')"
             class="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700">
-            + Add
+            + Tambah
         </button>
     </div>
 
     <!-- Modal Form -->
     <div id="formModal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg w-full max-w-md p-6 relative">
+        <div class="bg-white rounded-lg w-full mx-4 max-w-md p-4 sm:p-6 relative">
+
             <!-- Tombol Close -->
             <button onclick="document.getElementById('formModal').classList.add('hidden')"
                 class="absolute top-2 right-2 text-gray-600 hover:text-red-600 text-xl">&times;</button>
@@ -97,8 +105,8 @@
                         </label>
                     @endforeach
 
-                    <!-- Field Tambahan Jika KTP -->
-                    <div id="ktpFields" class="hidden">
+                    <!-- Field Tambahan Jika KTP atau Akte Lahir -->
+                    <div id="identitasFields" class="hidden">
                         <label class="block mt-2">Jenis Kelamin:</label>
                         <label class="inline-flex items-center">
                             <input type="radio" name="gender" value="Laki-laki" class="mr-2"> Laki-laki
@@ -106,8 +114,9 @@
                         <label class="inline-flex items-center">
                             <input type="radio" name="gender" value="Perempuan" class="mr-2"> Perempuan
                         </label>
-                        <input type="date" name="tanggal_lahir" class="w-full px-4 py-2 border rounded mt-2">
+                        <input type="date" name="tanggal_lahir" class="w-full px-4 py-2 border rounded mt-2" required>
                     </div>
+
 
                     <!-- Field Tambahan Jika KK -->
                     <div id="kkFields" class="hidden">
@@ -161,24 +170,25 @@
             document.getElementById('imageModal').classList.remove('hidden');
         }
     </script>
-<script>
-    document.querySelectorAll('.jenis-radio').forEach((radio) => {
-        radio.addEventListener('change', function () {
-            const ktp = document.getElementById('ktpFields');
-            const kk = document.getElementById('kkFields');
+    <script>
+        document.querySelectorAll('.jenis-radio').forEach((radio) => {
+            radio.addEventListener('change', function() {
+                const identitas = document.getElementById('identitasFields');
+                const kk = document.getElementById('kkFields');
 
-            if (this.value === 'KTP') {
-                ktp.classList.remove('hidden');
-                kk.classList.add('hidden');
-            } else if (this.value === 'KK') {
-                ktp.classList.add('hidden');
-                kk.classList.remove('hidden');
-            } else {
-                ktp.classList.add('hidden');
-                kk.classList.add('hidden');
-            }
+                if (this.value === 'KTP' || this.value === 'Akte Lahir') {
+                    identitas.classList.remove('hidden');
+                    kk.classList.add('hidden');
+                } else if (this.value === 'KK') {
+                    identitas.classList.add('hidden');
+                    kk.classList.remove('hidden');
+                } else {
+                    identitas.classList.add('hidden');
+                    kk.classList.add('hidden');
+                }
+            });
         });
-    });
-</script>
+    </script>
+
 
 @endsection

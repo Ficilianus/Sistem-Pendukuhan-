@@ -8,7 +8,8 @@
     </div>
 
     <!-- Tombol Navigasi -->
-    <div class="flex justify-center bg-[#f1efe5] py-4 mb-8 gap-4 rounded shadow">
+    <div class="flex flex-col sm:flex-row justify-center items-center bg-[#f1efe5] py-4 mb-8 gap-2 sm:gap-4 rounded shadow mx-2 sm:mx-0">
+
     <button id="btn-keluarga" onclick="showSection('keluarga')" class="tab-btn bg-gray-800 text-white px-4 py-2 rounded hover:bg-green-700 transition">Keluarga</button>
     <button id="btn-gender" onclick="showSection('gender')" class="tab-btn bg-gray-800 text-white px-4 py-2 rounded hover:bg-green-700 transition">Jenis Kelamin</button>
     <button id="btn-lansia" onclick="showSection('lansia')" class="tab-btn bg-gray-800 text-white px-4 py-2 rounded hover:bg-green-700 transition">Lansia</button>
@@ -23,8 +24,9 @@
         @foreach ($dataKeluarga as $data)
             <div class="w-full md:w-1/2 px-4 mb-8">
                 <div class="bg-white p-6 rounded-lg shadow-md h-full flex flex-col md:flex-row items-center gap-6">
-                    <div class="w-full md:w-1/2">
-                        <canvas id="chart-keluarga-{{ $data['rt'] }}" class="w-[250px] h-[250px]"></canvas>
+                    <div class="w-full sm:w-1/2 px-2 sm:px-4 mb-6 sm:mb-8">
+
+                        <canvas id="chart-keluarga-{{ $data['rt'] }}" class="w-full max-w-[250px] h-auto aspect-square"></canvas>
                     </div>
                     <div class="w-full md:w-1/2 space-y-2 text-gray-700">
                         <p><strong>RT:</strong> {{ $data['rt'] }}</p>
@@ -63,9 +65,10 @@
     <div id="section-gender" class="hidden flex flex-wrap -mx-4">
         @foreach ($dataGender as $data)
             <div class="w-full md:w-1/2 px-4 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md h-full flex flex-col md:flex-row items-center gap-6">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md h-full flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+
                     <div class="w-full md:w-1/2">
-                        <canvas id="chart-gender-{{ $data['rt'] }}" class="w-[250px] h-[250px]"></canvas>
+                        <canvas id="chart-gender-{{ $data['rt'] }}" class="w-full max-w-[250px] h-auto aspect-square"></canvas>
                     </div>
                     <div class="w-full md:w-1/2 space-y-2 text-gray-700">
                         <p><strong>RT:</strong> {{ $data['rt'] }}</p>
@@ -105,7 +108,7 @@
             <div class="w-full md:w-1/2 px-4 mb-8">
                 <div class="bg-white p-6 rounded-lg shadow-md h-full flex flex-col md:flex-row items-center gap-6">
                     <div class="w-full md:w-1/2">
-                        <canvas id="chart-lansia-{{ $data['rt'] }}" class="w-[250px] h-[250px]"></canvas>
+                        <canvas id="chart-lansia-{{ $data['rt'] }}" class="w-full max-w-[250px] h-auto aspect-square"></canvas>
                     </div>
                     <div class="w-full md:w-1/2 space-y-2 text-gray-700">
                         <p><strong>RT:</strong> {{ $data['rt'] }}</p>
