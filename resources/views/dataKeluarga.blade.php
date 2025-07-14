@@ -80,7 +80,7 @@
                                 class="w-full px-4 py-2 border rounded" required>
 
                             <select name="jenis_dokumen" class="w-full px-4 py-2 border rounded" required>
-                                @foreach (['KTP', 'KK', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah'] as $doc)
+                                @foreach (['KTP', 'KK', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah','BPJS'] as $doc)
                                     <option value="{{ $doc }}"
                                         {{ $item->jenis_dokumen === $doc ? 'selected' : '' }}>
                                         {{ $doc }}</option>

@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DokumenPenduduk;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
+use Illuminate\Support\Str;
+use App\Models\Dokumen;
 
 class DokumenController extends Controller
 {
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'nama_kepala_keluarga' => 'required|string|max:255',
             'nama' => 'required|string|max:255',
             'rt' => 'required|string|max:10',
-            'jenis_dokumen' => 'required|string|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah',
+            'jenis_dokumen' => 'required|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah,BPJS',
             'gender' => 'nullable|in:Laki-laki,Perempuan',
             'tanggal_lahir' => 'nullable|date',
             'status_keluarga' => 'nullable|in:Lengkap,Duda,Janda',
-            'file' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'file' => 'required|image|max:5120', // max 5MB
         ]);
 
 
@@ -56,7 +58,6 @@ class DokumenController extends Controller
         ]);
 
 
-
         return redirect()->back()->with('success', 'Data berhasil disimpan.');
     }
     public function index(Request $request)
@@ -86,7 +87,7 @@ class DokumenController extends Controller
 
         $dataKeluarga = DokumenPenduduk::where('nama_kepala_keluarga', $namaKK)
             ->where('rt', $rt)
-            ->orderByRaw("FIELD(jenis_dokumen, 'KK', 'KTP', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah')")
+            ->orderByRaw("FIELD(jenis_dokumen, 'KK', 'KTP', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah','BPJS')")
             ->get();
 
         return view('dataKeluarga', compact('dataKeluarga', 'namaKK', 'rt'));
@@ -158,5 +159,82 @@ class DokumenController extends Controller
         $dokumen->delete();
 
         return redirect()->back()->with('success', 'Data berhasil dihapus.');
+    }
+    public function download(Request $request)
+    {
+        $namaKK = $request->nama_kepala_keluarga;
+        $rt = $request->rt;
+
+        // Ambil semua file berdasarkan nama KK dan RT
+        $dokumens = \App\Models\Dokumen::where('nama_kepala_keluarga', $namaKK)
+            ->where('rt', $rt)
+            ->get();
+
+        if ($dokumens->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada dokumen untuk diunduh.');
+        }
+
+        // Nama zip
+        $zipFileName = 'dokumen_' . Str::slug($namaKK . '_' . $rt) . '.zip';
+        $zipFilePath = storage_path('app/public/temp/' . $zipFileName);
+
+        // Pastikan direktori temp ada
+        if (!Storage::exists('public/temp')) {
+            Storage::makeDirectory('public/temp');
+        }
+
+        // Buat file zip
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            foreach ($dokumens as $doc) {
+                $path = storage_path('app/public/dokumen/' . $doc->nama_file);
+                if (file_exists($path)) {
+                    $zip->addFile($path, $doc->jenis_dokumen . '_' . $doc->nama_file);
+                }
+            }
+            $zip->close();
+        }
+
+        // Kembalikan file zip sebagai response
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    }
+
+    public function downloadByRT(Request $request)
+    {
+        $rt = $request->query('rt');
+
+        if (!$rt) {
+            return redirect()->back()->with('error', 'RT tidak ditemukan.');
+        }
+
+        $dokumens = Dokumen::where('rt', $rt)->get();
+
+        if ($dokumens->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada dokumen untuk RT tersebut.');
+        }
+
+        $zipFileName = 'RT_' . $rt . '_dokumen.zip';
+        $zipPath = storage_path('app/public/temp/' . $zipFileName);
+
+        if (!Storage::exists('public/temp')) {
+            Storage::makeDirectory('public/temp');
+        }
+
+        $zip = new ZipArchive;
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            foreach ($dokumens as $doc) {
+                $kkFolder = Str::slug($doc->nama_kepala_keluarga); // nama folder per KK
+                $fullPath = storage_path('app/public/dokumen/' . $doc->nama_file);
+
+                if (file_exists($fullPath)) {
+                    $zip->addFile($fullPath, "{$rt}/{$kkFolder}/{$doc->jenis_dokumen}_{$doc->nama_file}");
+                }
+            }
+
+            $zip->close();
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

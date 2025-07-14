@@ -19,4 +19,6 @@ class DokumenPenduduk extends Model
         'status_keluarga',
         'nama_file',
     ];
+    // protected $table = 'dokumen_penduduks'; // atau nama tabel sebenarnya
+
 }
