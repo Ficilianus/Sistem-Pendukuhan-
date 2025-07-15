@@ -13,15 +13,19 @@ return new class extends Migration
     public function up()
     {
     Schema::create('dokumen_penduduks', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama');
-        $table->string('rt');
-        $table->string('jenis_dokumen');
-        $table->enum('gender', ['Laki-laki', 'Perempuan'])->nullable(); // hanya jika KTP
-        $table->date('tanggal_lahir')->nullable(); // hanya jika KTP
-        $table->string('nama_file'); // simpan nama file-nya
-        $table->timestamps();
-    });
+    $table->id();
+    $table->string('nama_kepala_keluarga');
+    $table->string('nama');
+    $table->string('rt');
+    $table->string('jenis_dokumen');
+    $table->string('gender')->nullable();
+    $table->date('tanggal_lahir')->nullable();
+    $table->string('status_keluarga')->nullable();
+    $table->string('nama_file');
+    $table->timestamps();
+});
+
+
 }
 
 

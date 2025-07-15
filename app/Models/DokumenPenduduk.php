@@ -10,11 +10,15 @@ class DokumenPenduduk extends Model
     use HasFactory;
 
     protected $fillable = [
+        'nama_kepala_keluarga',
         'nama',
         'rt',
         'jenis_dokumen',
         'gender',
         'tanggal_lahir',
+        'status_keluarga',
         'nama_file',
     ];
+    // protected $table = 'dokumen_penduduks'; // atau nama tabel sebenarnya
+
 }
