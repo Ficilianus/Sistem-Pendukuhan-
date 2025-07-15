@@ -17,6 +17,9 @@
         ☰ Menu
     </button>
 
+    <!-- Overlay untuk klik di luar sidebar -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+
     <!-- Sidebar -->
     <div id="sidebar"
         class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-[#BDB395] to-[#a59d85] text-white p-6 transform -translate-x-full transition-transform duration-300 z-40 shadow-2xl rounded-tr-3xl rounded-br-3xl">
@@ -53,11 +56,35 @@
     <script>
         const menuButton = document.getElementById('menuButton');
         const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
 
         menuButton.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        });
+
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSidebar();
+            }
         });
     </script>
 </body>
+
 
 </html>

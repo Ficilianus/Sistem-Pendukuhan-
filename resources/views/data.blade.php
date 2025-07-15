@@ -40,12 +40,13 @@
             @foreach (['RT01', 'RT02', 'RT03', 'RT04', 'RT05'] as $rt)
                 <a href="{{ route('dokumen.index', array_merge(request()->only('search'), ['rt' => $rt])) }}"
                     class="w-full h-12 flex items-center justify-center font-semibold rounded-xl transition-all duration-300 shadow-md
-            {{ request('rt') === $rt ? 'bg-gradient-to-r from-green-500 to-green-700' : 'bg-gradient-to-r from-gray-600 to-gray-800' }}
-            text-white hover:scale-105 hover:ring-2 hover:ring-offset-2 hover:ring-gray-300">
+            {{ request('rt') === $rt ? 'bg-[#f1efe5] text-black' : 'bg-gray-700 text-white' }}
+            hover:scale-105 hover:ring-2 hover:ring-offset-2 hover:ring-gray-300">
                     {{ $rt }}
                 </a>
             @endforeach
         </div>
+
 
 
 
@@ -65,7 +66,8 @@
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Data Keluarga</h2>
 
         @forelse ($dokumenKK as $item)
-            <div class="tilt-card flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-3 rounded shadow space-y-2 sm:space-y-0 transition-transform duration-300">
+            <div
+                class="tilt-card flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-3 rounded shadow space-y-2 sm:space-y-0 transition-transform duration-300">
 
                 <div>
                     <span class="text-gray-800 font-medium">{{ $item->nama_kepala_keluarga }}</span>
@@ -143,7 +145,6 @@
                     <!-- Jenis Dokumen -->
                     <label class="block font-medium">Jenis Dokumen:</label>
                     @foreach (['KTP', 'KK', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah', 'BPJS'] as $doc)
-
                         <label class="inline-flex items-center">
                             <input type="radio" name="jenis_dokumen" value="{{ $doc }}" class="mr-2 jenis-radio"
                                 required> {{ $doc }}
@@ -159,7 +160,7 @@
                         <label class="inline-flex items-center">
                             <input type="radio" name="gender" value="Perempuan" class="mr-2"> Perempuan
                         </label>
-                        <input type="date" name="tanggal_lahir" class="w-full px-4 py-2 border rounded mt-2" >
+                        <input type="date" name="tanggal_lahir" class="w-full px-4 py-2 border rounded mt-2">
                     </div>
 
 
@@ -182,9 +183,9 @@
                     <input type="file" name="file" accept="image/*" class="w-full" required>
 
                     <button type="submit" id="btnSimpan"
-    class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 hover:scale-105 shadow-md">
-    Simpan
-</button>
+                        class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 hover:scale-105 shadow-md">
+                        Simpan
+                    </button>
 
                 </div>
             </form>
@@ -237,18 +238,18 @@
             });
         });
     </script>
-<style>
-    .tilt-card {
-        transform-style: preserve-3d;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        perspective: 1000px;
-    }
+    <style>
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            perspective: 1000px;
+        }
 
-    .tilt-card:hover {
-        transform: rotateY(6deg) rotateX(4deg) scale(1.02);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-        z-index: 10;
-    }
-</style>
+        .tilt-card:hover {
+            transform: rotateY(6deg) rotateX(4deg) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+    </style>
 
 @endsection

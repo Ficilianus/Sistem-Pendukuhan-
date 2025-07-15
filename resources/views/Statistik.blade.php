@@ -9,7 +9,7 @@
 
     <!-- Tombol Navigasi -->
     <div
-        class="flex flex-col sm:flex-row justify-center items-center bg-[#f1efe5] py-4 mb-8 gap-2 sm:gap-4 rounded shadow mx-2 sm:mx-0">
+        class="flex flex-col sm:flex-row justify-center items-center bg-[#BDB395] py-4 mb-8 gap-2 sm:gap-4 rounded shadow mx-2 sm:mx-0">
         <button id="btn-keluarga" onclick="showSection('keluarga')"
             class="tab-btn px-4 py-2 rounded-xl font-semibold text-white transition-all duration-300 shadow-md
         bg-gradient-to-r from-gray-600 to-gray-800 hover:scale-105 hover:ring-2 hover:ring-offset-2 hover:ring-gray-400">
