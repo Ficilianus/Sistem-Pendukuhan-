@@ -8,6 +8,15 @@
             Data Penduduk
         </h1>
     </div>
+    <!-- Notifikasi Pop-up -->
+    @if (session('success') || session('error'))
+        <div id="popup-notification"
+            class="fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-sm w-full px-6 py-4 rounded-lg shadow-lg text-white text-sm font-semibold
+    {{ session('success') ? 'bg-green-600' : 'bg-red-600' }}
+    animate-fade-in">
+            {{ session('success') ?? session('error') }}
+        </div>
+    @endif
     <!-- Box Pertama -->
     <div class="max-w-2xl mx-auto bg-[#BDB395] p-6 rounded-lg shadow-md space-y-6">
         <form action="{{ route('dokumen.index') }}" method="GET">
@@ -144,7 +153,7 @@
 
                     <!-- Jenis Dokumen -->
                     <label class="block font-medium">Jenis Dokumen:</label>
-                    @foreach (['KTP', 'KK', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah', 'BPJS'] as $doc)
+                    @foreach (['KTP', 'KK', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah', 'BPJS','Akte Kematian'] as $doc)
                         <label class="inline-flex items-center">
                             <input type="radio" name="jenis_dokumen" value="{{ $doc }}" class="mr-2 jenis-radio"
                                 required> {{ $doc }}
@@ -191,6 +200,41 @@
             </form>
         </div>
     </div>
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .animate-fade-out {
+            animation: fadeOutUp 0.4s ease-in forwards;
+        }
+    </style>
+
 
     <!-- Script untuk interaktif -->
     <script>
@@ -251,5 +295,34 @@
             z-index: 10;
         }
     </style>
+    <script>
+        // Hilangkan notifikasi sukses setelah 3 detik
+        setTimeout(() => {
+            const successAlert = document.getElementById('success-alert');
+            if (successAlert) {
+                successAlert.classList.add('opacity-0');
+                setTimeout(() => successAlert.remove(), 500); // hapus elemen setelah animasi
+            }
+        }, 3000);
+
+        // Hilangkan notifikasi error setelah 5 detik (opsional)
+        setTimeout(() => {
+            const errorAlert = document.getElementById('error-alert');
+            if (errorAlert) {
+                errorAlert.classList.add('opacity-0');
+                setTimeout(() => errorAlert.remove(), 500);
+            }
+        }, 5000);
+    </script>
+    <script>
+        setTimeout(() => {
+            const popup = document.getElementById('popup-notification');
+            if (popup) {
+                popup.classList.remove('animate-fade-in');
+                popup.classList.add('animate-fade-out');
+                setTimeout(() => popup.remove(), 500); // setelah animasi keluar selesai
+            }
+        }, 3000); // tampil selama 3 detik
+    </script>
 
 @endsection

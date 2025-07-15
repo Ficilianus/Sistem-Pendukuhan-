@@ -17,11 +17,11 @@ class DokumenController extends Controller
             'nama_kepala_keluarga' => 'required|string|max:255',
             'nama' => 'required|string|max:255',
             'rt' => 'required|string|max:10',
-            'jenis_dokumen' => 'required|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah,BPJS',
+            'jenis_dokumen' => 'required|in:KTP,KK,Akte Lahir,Foto Rumah,Buku Nikah,BPJS,Akte Kematian',
             'gender' => 'nullable|in:Laki-laki,Perempuan',
             'tanggal_lahir' => 'nullable|date',
             'status_keluarga' => 'nullable|in:Lengkap,Duda,Janda',
-            'file' => 'required|image|max:5120', // max 5MB
+            'file' => 'required|image|max:7168 ', // max 7MB
         ]);
 
 
@@ -43,8 +43,19 @@ class DokumenController extends Controller
 
         $filename = "{$namaKepalaKeluarga}_{$jenis}_{$rt}_{$nama}.{$extension}";
 
-        $file->storeAs('public/dokumen', $filename);
+        // Cek apakah data duplikat (nama kepala keluarga + nama + jenis dokumen + RT)
+        $duplicate = DokumenPenduduk::where('nama_kepala_keluarga', $validated['nama_kepala_keluarga'])
+            ->where('nama', $validated['nama'])
+            ->where('rt', $validated['rt'])
+            ->where('jenis_dokumen', $validated['jenis_dokumen'])
+            ->exists();
 
+        if ($duplicate) {
+            return redirect()->back()->with('error', 'Data duplikat. Data tidak disimpan.');
+        }
+
+        // Simpan file dan data hanya jika tidak duplikat
+        $file->storeAs('public/dokumen', $filename);
 
         DokumenPenduduk::create([
             'nama_kepala_keluarga' => $validated['nama_kepala_keluarga'],
@@ -56,7 +67,6 @@ class DokumenController extends Controller
             'status_keluarga' => $validated['jenis_dokumen'] === 'KK' ? $validated['status_keluarga'] : null,
             'nama_file' => $filename,
         ]);
-
 
         return redirect()->back()->with('success', 'Data berhasil disimpan.');
     }
@@ -87,7 +97,7 @@ class DokumenController extends Controller
 
         $dataKeluarga = DokumenPenduduk::where('nama_kepala_keluarga', $namaKK)
             ->where('rt', $rt)
-            ->orderByRaw("FIELD(jenis_dokumen, 'KK', 'KTP', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah','BPJS')")
+            ->orderByRaw("FIELD(jenis_dokumen, 'KK', 'KTP', 'Akte Lahir', 'Foto Rumah', 'Buku Nikah','BPJS','Akte Kematian')")
             ->get();
 
         return view('dataKeluarga', compact('dataKeluarga', 'namaKK', 'rt'));
